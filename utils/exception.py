@@ -40,5 +40,3 @@ def custom_exception_handler(exc, context):
         return Response({
             'message': '服务器错误:{exc}'.format(exc=exc),
         }, status=response.status_code, exception=True)
-
-    return response

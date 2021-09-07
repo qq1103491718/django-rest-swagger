@@ -13,17 +13,23 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from rest_framework_swagger.renderers import SwaggerUIRenderer, OpenAPIRenderer
 from rest_framework.schemas import get_schema_view
 from django.conf.urls import url, include
+from django.urls import path
 from django.contrib import admin
 from rest_framework import routers
 from api import views
+from user.views import *
+# from rest_framework_simplejwt.views import (TokenObtainPariView)
 # 路由
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet, base_name='user')
-router.register(r'groups', views.GroupViewSet, base_name='group')
-router.register(r'test', views.TestViewSet, base_name='test')
+router.register(r'groups', views.GroupViewSet, base_name='组')
+router.register(r'user', UserViewSet, base_name='用户')
+router.register(r'test', views.TestViewSet, base_name='测试')
+router.register(r'permission', views.PermissionViewSet, base_name='权限组')
+# router.register(r'token', JSONWebTokenAPIView, base_name='token')
 # 重要的是如下三行
 schema_view = get_schema_view(title='Users API', renderer_classes=[
                               OpenAPIRenderer, SwaggerUIRenderer])
@@ -33,5 +39,11 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include(router.urls)),
     # drf登录
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    # rest_framework_simplejwt自带的得到token
+    path('user/token/', MyTokenObtainPairView.as_view(),
+         name='token_obtain_pair'),
+    # 刷新JWT
+    path('user/v1/token/refresh/',
+         MyTokenRefreshView.as_view(), name='token_refresh'),
 ]
