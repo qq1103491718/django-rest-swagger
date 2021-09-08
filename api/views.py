@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action, renderer_classes
 from utils.pagination import CustomPagination
 from utils.rendererresponse import customrenderer
-
+from rest_framework.permissions import IsAuthenticated
 
 # class UserViewSet(viewsets.ModelViewSet):
 #     '''查看，编辑用户的界面'''
@@ -48,4 +48,5 @@ class TestViewSet(viewsets.ModelViewSet):
     serializer_class = TestSerializer
     renderer_classes = [customrenderer]
     pagination_class = CustomPagination
+    # permission_classes = [IsAuthenticated]
     # authentication_classes=[SessionAuthentication, BasicAuthentication]

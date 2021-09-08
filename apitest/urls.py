@@ -19,10 +19,9 @@ from rest_framework.schemas import get_schema_view
 from django.conf.urls import url, include
 from django.urls import path
 from django.contrib import admin
-from rest_framework import routers
+from rest_framework import permissions, routers
 from api import views
 from user.views import *
-# from rest_framework_simplejwt.views import (TokenObtainPariView)
 # 路由
 router = routers.DefaultRouter()
 router.register(r'groups', views.GroupViewSet, base_name='组')
@@ -31,8 +30,10 @@ router.register(r'test', views.TestViewSet, base_name='测试')
 router.register(r'permission', views.PermissionViewSet, base_name='权限组')
 # router.register(r'token', JSONWebTokenAPIView, base_name='token')
 # 重要的是如下三行
-schema_view = get_schema_view(title='Users API', renderer_classes=[
-                              OpenAPIRenderer, SwaggerUIRenderer])
+schema_view = get_schema_view(title='Users API',
+                              permission_classes=[AllowAny],
+                              renderer_classes=[
+                                  OpenAPIRenderer, SwaggerUIRenderer])
 urlpatterns = [
     # swagger接口文档路由
     url(r'^docs/', schema_view, name="docs"),
@@ -40,10 +41,4 @@ urlpatterns = [
     url(r'^', include(router.urls)),
     # drf登录
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    # rest_framework_simplejwt自带的得到token
-    path('user/token/', MyTokenObtainPairView.as_view(),
-         name='token_obtain_pair'),
-    # 刷新JWT
-    path('user/v1/token/refresh/',
-         MyTokenRefreshView.as_view(), name='token_refresh'),
 ]

@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'user',
     'rest_framework',
     'rest_framework_swagger',
-    'rest_framework_simplejwt',
+    'jwt'
 ]
 
 
@@ -146,13 +146,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SWAGGER_SETTINGS = {
     # 基础样式
     'SECURITY_DEFINITIONS': {
-        "basic": {
-            'type': 'basic'
+        'api_key': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'token',
         }
     },
     # 如果需要登录才能够查看接口文档, 登录的链接使用restframework自带的.
-    'LOGIN_URL': 'rest_framework:login',
-    'LOGOUT_URL': 'rest_framework:logout',
+    # 'LOGIN_URL': 'rest_framework:login',
+    # 'LOGOUT_URL': 'rest_framework:logout',
+    'USE_SESSION_AUTH': False,
     # 'DOC_EXPANSION': None,
     # 'SHOW_REQUEST_HEADERS':True,
     # 'USE_SESSION_AUTH': True,
@@ -164,6 +167,9 @@ SWAGGER_SETTINGS = {
     # 方法列表字母排序
     'OPERATIONS_SORTER': 'alpha',
     'VALIDATOR_URL': None,
+    # 设置为True显示请求标头。
+    # 'SHOW_REQUEST_HEADERS': True,
+
 }
 
 # drf配置
@@ -175,11 +181,11 @@ REST_FRAMEWORK = {
         'utils.rendererresponse.customrenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ),
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        # 'rest_framework.permissions.IsAuthenticated',
+    ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'utils.pyjwt.jwtAuthentication',
         # 'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
     ),
@@ -188,8 +194,8 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 AUTH_USER_MODEL = "user.UserProfile"
-# JWT配置 里面具体配置可以参考文档
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),  # 配置过期时间
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=15),
-}
+# # JWT配置 里面具体配置可以参考文档
+# SIMPLE_JWT = {
+#     'ACCESS_TOKEN_LIFETIME': timedelta(days=7),  # 配置过期时间
+#     'REFRESH_TOKEN_LIFETIME': timedelta(days=15),
+# }

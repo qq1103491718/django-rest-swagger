@@ -2,15 +2,12 @@
 from .serializer import UserSerializer
 from rest_framework import viewsets
 from .models import UserProfile
-from rest_framework.decorators import action, renderer_classes
+from rest_framework.decorators import action, permission_classes, renderer_classes
 from rest_framework.response import Response
 from utils.pagination import CustomPagination
-from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.views import *
-from rest_framework_simplejwt.serializers import TokenRefreshSerializer
-
-from .serializer import *
-from .models import *
+from utils.pyjwt import jwtencode
+from rest_framework import status
+from rest_framework.permissions import AllowAny
 
 
 class UserViewSet(
@@ -38,21 +35,22 @@ class UserViewSet(
     serializer_class = UserSerializer
     # permission_classes = [IsAuthenticated]
 
+    @permission_classes(AllowAny)
     @action(methods=['POST'], detail=False)
     def Login(self, request):
         '''
         登陆用户
+
         ---
         parameters:
-        - name: some_param
+        - name: username
           description: Foobar long description goes here
           required: true
-          type: integer
+          type: string
           paramType: form
-        - name: other_foo
-          paramType: query
-        - name: avatar
-          type: file
+        - name: password
+          paramType: form
+          required: true
         '''
         # request.data返回请求正文的解析内容
         user = request.data.get('username')
@@ -60,30 +58,19 @@ class UserViewSet(
         pwd = request.data.get('password')
         queryset = UserProfile.objects.filter(
             username=user, password=pwd)
-        pg = CustomPagination()
-        # 在数据库中获取分页数据
-        pager_roles = pg.paginate_queryset(
-            queryset=queryset, request=request, view=self)
+
         # 对分页数据进行序列化
-        ser = UserSerializer(instance=pager_roles, many=True)
+        ser = UserSerializer(instance=queryset, many=True)
+        if len(ser.data) > 0:
+            user = ser.data[0]
+
+            token = jwtencode()
+            token.username = user.get('username')
+            token.id = user.get('id')
+            user['token'] = token.encode()
+            return Response(user)
+        return Response(data='当前用户名或密码错误！', status=status.HTTP_403_FORBIDDEN)
         # token = Token.objects.create(user=request.user)
         # print(token.key)
-        return Response(ser.data)
         # ser = UserSerializer(instance=user_object, many=True)
         # return Response({'data': '1111'})
-
-
-class MyTokenObtainPairView(TokenObtainPairView):
-    """
-    自定义得到token username: 账号或者密码 password: 密码或者验证码
-    """
-    www_authenticate_realm = 'user'
-    serializer_class = MyTokenObtainPairSerializer
-
-
-class MyTokenRefreshView(TokenViewBase):
-    """
-    自定义刷新token refresh: 刷新token的元素
-    """
-    www_authenticate_realm = 'user'
-    serializer_class = TokenRefreshSerializer
