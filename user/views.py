@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from utils.pagination import CustomPagination
 from utils.pyjwt import jwtencode
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
 class UserViewSet(
@@ -35,7 +35,7 @@ class UserViewSet(
     serializer_class = UserSerializer
     # permission_classes = [IsAuthenticated]
 
-    @permission_classes(AllowAny)
+    # @permission_classes(AllowAny)
     @action(methods=['POST'], detail=False)
     def Login(self, request):
         '''
@@ -47,9 +47,7 @@ class UserViewSet(
           description: Foobar long description goes here
           required: true
           type: string
-          paramType: form
         - name: password
-          paramType: form
           required: true
         '''
         # request.data返回请求正文的解析内容

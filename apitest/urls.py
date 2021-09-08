@@ -22,6 +22,7 @@ from django.contrib import admin
 from rest_framework import permissions, routers
 from api import views
 from user.views import *
+
 # 路由
 router = routers.DefaultRouter()
 router.register(r'groups', views.GroupViewSet, base_name='组')

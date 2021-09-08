@@ -1,32 +1,16 @@
 
 import jwt
 import datetime
-from jwt import exceptions
-
 from rest_framework.authentication import BaseAuthentication
 
 
 class jwtAuthentication(BaseAuthentication):
     def authenticate(self, request):
-        token = request.META.get("token")
+        token = request.META.get("HTTP_TOKEN")
         pa = jwtencode()
         token
         if not token:
             return None
-        try:
-            pa.decode(encoded=token)
-        except exceptions:
-            raise exceptions
-        # raise
-
-    # def authenticate_header(self, request):
-    #     request
-    #     """
-    #         Return a string to be used as the value of the `WWW-Authenticate`
-    #         header in a `401 Unauthenticated` response, or `None` if the
-    #         authentication scheme should return `403 Permission Denied` responses.
-    #         """
-    #     pass
 
 
 class jwtencode:
@@ -55,4 +39,6 @@ class jwtencode:
         return jwt.encode(dic, self.key, algorithm=self.algorithm)
 
     def decode(self, encoded=None):
-        return jwt.decode(encoded, self.key, algorithms=["RS256"])
+        user = jwt.decode(encoded, self.key, algorithms=['HS256'])
+        user
+        # print(jwt.decode(encoded, self.key, algorithms=['HS256']))
