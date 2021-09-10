@@ -2,6 +2,7 @@
 import jwt
 import datetime
 from rest_framework.authentication import BaseAuthentication
+from rest_framework.views import exception_handler
 
 
 class jwtAuthentication(BaseAuthentication):
@@ -39,6 +40,11 @@ class jwtencode:
         return jwt.encode(dic, self.key, algorithm=self.algorithm)
 
     def decode(self, encoded=None):
-        user = jwt.decode(encoded, self.key, algorithms=['HS256'])
-        user
+        if encoded:
+            try:
+                user = jwt.decode(encoded, self.key, algorithms=['HS256'])
+                return True
+            except:
+                return False
+        return False
         # print(jwt.decode(encoded, self.key, algorithms=['HS256']))

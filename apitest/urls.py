@@ -21,7 +21,7 @@ from django.urls import path
 from django.contrib import admin
 from rest_framework import permissions, routers
 from api import views
-from user.views import *
+from user.views import UserViewSet, userLoginView
 
 # 路由
 router = routers.DefaultRouter()
@@ -32,7 +32,6 @@ router.register(r'permission', views.PermissionViewSet, base_name='权限组')
 # router.register(r'token', JSONWebTokenAPIView, base_name='token')
 # 重要的是如下三行
 schema_view = get_schema_view(title='Users API',
-                              permission_classes=[AllowAny],
                               renderer_classes=[
                                   OpenAPIRenderer, SwaggerUIRenderer])
 urlpatterns = [
@@ -42,4 +41,5 @@ urlpatterns = [
     url(r'^', include(router.urls)),
     # drf登录
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^user/login', userLoginView.as_view()),
 ]

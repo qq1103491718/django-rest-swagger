@@ -2,7 +2,7 @@
 from rest_framework.views import exception_handler
 from rest_framework.views import Response
 from rest_framework import status
-
+from rest_framework.exceptions import APIException
 
 # 将仅针对由引发的异常生成的响应调用异常处理程序。它不会用于视图直接返回的任何响应
 # 需要在setting中配置这个异常处理方法,并且异常返回的respose对象还会传到默认返回的json的renderer类中，在setting中drf配置中的DEFAULT_RENDERER_CLASSES
@@ -20,6 +20,8 @@ from rest_framework import status
 #         'utils.rendererresponse.customrenderer',
 #     ),
 # }
+
+
 def custom_exception_handler(exc, context):
     # 先调用REST framework默认的异常处理方法获得标准错误响应对象
     response = exception_handler(exc, context)
@@ -38,5 +40,11 @@ def custom_exception_handler(exc, context):
     else:
         # print('123 = %s - %s - %s' % (context['view'], context['request'].method, exc))
         return Response({
-            'message': '服务器错误:{exc}'.format(exc=exc),
+            'message': '{exc}'.format(exc=exc),
         }, status=response.status_code, exception=True)
+
+
+# class AuthenticationFailed(APIException):
+#     status_code = status.HTTP_401_UNAUTHORIZED
+#     default_detail = _('Incorrect authentication credentials.')
+#     default_code = 'authentication_failed'

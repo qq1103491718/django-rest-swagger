@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'user',
     'rest_framework',
     'rest_framework_swagger',
+    'django_filters',
     'jwt'
 ]
 
@@ -176,16 +177,19 @@ SWAGGER_SETTINGS = {
 REST_FRAMEWORK = {
     # 全局配置异常模块
     'EXCEPTION_HANDLER': 'utils.exception.custom_exception_handler',
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     # 修改默认返回JSON的renderer的类
     'DEFAULT_RENDERER_CLASSES': (
         'utils.rendererresponse.customrenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',
+        # 'rest_framework.renderers.BrowsableAPIRenderer',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
+        # 'utils.authenticated.isMyTokenPermission'
         # 'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'utils.authentication.jwtAuthentication',
+        # 'utils.authentication.jwtAuthentication',
+        # 'utils.authenticated.isMyTokenPermission',
         # 'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
     ),

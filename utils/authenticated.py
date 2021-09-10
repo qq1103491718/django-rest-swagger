@@ -1,8 +1,8 @@
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import IsAuthenticated
 from utils.pyjwt import jwtencode
 
 
-class isMyTokenPermission(BasePermission):
+class isMyTokenPermission(IsAuthenticated):
     def has_permission(self, request, view):
         token = request.META.get("HTTP_TOKEN")
-        return bool(token)
+        return jwtencode().decode(token)

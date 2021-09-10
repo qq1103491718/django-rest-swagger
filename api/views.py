@@ -9,7 +9,7 @@ from rest_framework.decorators import action, renderer_classes
 from utils.pagination import CustomPagination
 from utils.rendererresponse import customrenderer
 from utils.authenticated import isMyTokenPermission
-
+# from rest_framework.permissions import IsAuthenticated
 # class UserViewSet(viewsets.ModelViewSet):
 #     '''查看，编辑用户的界面'''
 #     queryset = User.objects.all().order_by('-date_joined')

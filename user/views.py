@@ -1,17 +1,20 @@
 
-from .serializer import UserSerializer
-from rest_framework import viewsets
+from rest_framework.serializers import SerializerMetaclass
+from rest_framework.generics import GenericAPIView
+from .serializer import UserSerializer, userFilter
+from utils.mixins import commonViewsets
 from .models import UserProfile
-from rest_framework.decorators import action, permission_classes, renderer_classes
 from rest_framework.response import Response
 from utils.pagination import CustomPagination
 from utils.pyjwt import jwtencode
-from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from utils.authenticated import isMyTokenPermission
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.filters import SearchFilter
+# from .filter import userFilter
 
 
 class UserViewSet(
-        viewsets.ModelViewSet):
+        commonViewsets):
     '''
                 retrieve:
                     获取用户信息
@@ -33,23 +36,18 @@ class UserViewSet(
             '''
     queryset = UserProfile.objects.all()
     serializer_class = UserSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [isMyTokenPermission]
 
-    # @permission_classes(AllowAny)
-    @action(methods=['POST'], detail=False)
-    def Login(self, request):
+
+class userLoginView(GenericAPIView):
+    serializer_class = userFilter
+
+    def post(self, request, *args, **kwargs):
         '''
         登陆用户
 
-        ---
-        parameters:
-        - name: username
-          description: Foobar long description goes here
-          required: true
-          type: string
-        - name: password
-          required: true
         '''
+
         # request.data返回请求正文的解析内容
         user = request.data.get('username')
 
@@ -58,7 +56,7 @@ class UserViewSet(
             username=user, password=pwd)
 
         # 对分页数据进行序列化
-        ser = UserSerializer(instance=queryset, many=True)
+        ser = userFilter(instance=queryset, many=True)
         if len(ser.data) > 0:
             user = ser.data[0]
 
@@ -67,8 +65,5 @@ class UserViewSet(
             token.id = user.get('id')
             user['token'] = token.encode()
             return Response(user)
-        return Response(data='当前用户名或密码错误！', status=status.HTTP_403_FORBIDDEN)
-        # token = Token.objects.create(user=request.user)
-        # print(token.key)
-        # ser = UserSerializer(instance=user_object, many=True)
-        # return Response({'data': '1111'})
+        raise AuthenticationFailed
+        # return Response(data='当前用户名或密码错误！', status=status.HTTP_403_FORBIDDEN)
