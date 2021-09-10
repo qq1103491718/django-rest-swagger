@@ -1,7 +1,7 @@
 
 from rest_framework.serializers import SerializerMetaclass
 from rest_framework.generics import GenericAPIView
-from .serializer import UserSerializer, userFilter
+from .serializer import UserSerializer, userLoginSerializer
 from utils.mixins import commonViewsets
 from .models import UserProfile
 from rest_framework.response import Response
@@ -10,7 +10,7 @@ from utils.pyjwt import jwtencode
 from utils.authenticated import isMyTokenPermission
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.filters import SearchFilter
-# from .filter import userFilter
+from .filter import userFilter
 
 
 class UserViewSet(
@@ -37,10 +37,11 @@ class UserViewSet(
     queryset = UserProfile.objects.all()
     serializer_class = UserSerializer
     permission_classes = [isMyTokenPermission]
+    filterset_class = userFilter
 
 
 class userLoginView(GenericAPIView):
-    serializer_class = userFilter
+    serializer_class = userLoginSerializer
 
     def post(self, request, *args, **kwargs):
         '''
@@ -56,7 +57,7 @@ class userLoginView(GenericAPIView):
             username=user, password=pwd)
 
         # 对分页数据进行序列化
-        ser = userFilter(instance=queryset, many=True)
+        ser = userLoginSerializer(instance=queryset, many=True)
         if len(ser.data) > 0:
             user = ser.data[0]
 
