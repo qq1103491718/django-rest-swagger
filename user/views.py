@@ -36,7 +36,7 @@ class UserViewSet(
             '''
     queryset = UserProfile.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [isMyTokenPermission]
+    # permission_classes = [isMyTokenPermission]
     filterset_class = userFilter
 
 

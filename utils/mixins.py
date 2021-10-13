@@ -1,6 +1,7 @@
 from rest_framework import mixins
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.decorators import action
 
 
 class ListModelViewMixin(mixins.ListModelMixin):
@@ -27,4 +28,9 @@ class commonViewsets(
         mixins.RetrieveModelMixin,
         ListModelViewMixin,
         viewsets.GenericViewSet):
-    pass
+
+    @action(methods=['get'], detail=False)
+    def getAllDate(self, request, pk=None):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)

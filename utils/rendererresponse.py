@@ -27,7 +27,7 @@ class customrenderer(JSONRenderer):
                     'code', renderer_context["response"].status_code)
             # 如果不是字典则将msg内容改为请求成功 code改为请求的状态码
             else:
-                msg = '请求成功、'
+                msg = '请求成功'
                 code = renderer_context["response"].status_code
 
             # 自定义返回的格式

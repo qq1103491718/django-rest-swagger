@@ -9,6 +9,7 @@ from rest_framework.decorators import action, renderer_classes
 from utils.pagination import CustomPagination
 from utils.rendererresponse import customrenderer
 from utils.authenticated import isMyTokenPermission
+from utils.mixins import commonViewsets
 # from rest_framework.permissions import IsAuthenticated
 # class UserViewSet(viewsets.ModelViewSet):
 #     '''查看，编辑用户的界面'''
@@ -16,19 +17,19 @@ from utils.authenticated import isMyTokenPermission
 #     serializer_class = UserSerializer
 
 
-class GroupViewSet(viewsets.ModelViewSet):
+class GroupViewSet(commonViewsets):
     '''查看，编辑组的界面'''
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
 
-class PermissionViewSet(viewsets.ModelViewSet):
+class PermissionViewSet(commonViewsets):
     '''查看，编辑组的界面'''
     queryset = Permission.objects.all()
     serializer_class = PermissionSerializer
 
 
-class TestViewSet(viewsets.ModelViewSet):
+class TestViewSet(commonViewsets):
     '''crud 接口'''
 
     @action(methods=['POST'], detail=False)
@@ -48,5 +49,5 @@ class TestViewSet(viewsets.ModelViewSet):
     serializer_class = TestSerializer
     renderer_classes = [customrenderer]
     pagination_class = CustomPagination
-    permission_classes = [isMyTokenPermission]
+    # permission_classes = [isMyTokenPermission]
     # authentication_classes=[SessionAuthentication, BasicAuthentication]
