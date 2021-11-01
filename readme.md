@@ -6,3 +6,6 @@ python3 manage.py changepassword admin
 
 sertkey
 a446b103-81177ade-bf382d0f-75486
+
+<!-- 创建模块 -->
+django-admin startapp account

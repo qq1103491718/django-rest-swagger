@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # 加入以下
     'api',
     'user',
+    'account',
     'rest_framework',
     'rest_framework_swagger',
     'django_filters',

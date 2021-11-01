@@ -2,6 +2,7 @@
 
 from rest_framework import serializers
 from .models import UserProfile
+from account.serializer import AccountSerializer
 
 
 class userLoginSerializer(serializers.ModelSerializer):
@@ -15,6 +16,7 @@ class userLoginSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     name = serializers.CharField()
+    # account = serializers.StringRelatedField(many=True)
 
     def validate_username(self, validate_username):
         return validate_username

@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 # from rest_framework.permissions
+from account.models import Account
 
 
 class UserProfile(AbstractUser):
@@ -24,6 +25,8 @@ class UserProfile(AbstractUser):
     email = models.EmailField(
         max_length=100, null=True,
         blank=True, verbose_name="邮箱")
+    # account = models.ForeignKey(
+    #     Account, related_name='account', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = "用户"
